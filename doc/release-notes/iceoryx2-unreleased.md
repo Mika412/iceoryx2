@@ -16,6 +16,7 @@
 * [#1](https://github.com/eclipse-iceoryx/iceoryx2/issues/1) Example text
 * [#2011](https://github.com/eclipse-iceoryx/iceoryx2/issues/2011) Add a publish-subscribe latency benchmark with a FlatBuffers payload
 * [#2031](https://github.com/eclipse-iceoryx/iceoryx2/issues/2031) Notify the event service named after a service when the link delivered samples to it
+* [#9040](https://github.com/eclipse-iceoryx/iceoryx2/issues/9040) Keep the contents of a static storage in memory and close its file
 
 ### Bugfixes
 
