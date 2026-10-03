@@ -179,7 +179,6 @@ impl<T, Ptr: PointerFamily> MetaSlotMap<T, Ptr> {
         for n in 0..capacity {
             unsafe {
                 self.idx_to_data.push_impl(INVALID);
-                self.data.push_impl(None);
                 self.data_next_free_index.push_impl(n);
             }
             let previous = if n == 0 { INVALID } else { n - 1 };
@@ -302,7 +301,11 @@ impl<T, Ptr: PointerFamily> MetaSlotMap<T, Ptr> {
                 "data and idx_to_data correspond and there must be always a free index available.",
             );
             self.idx_to_data[key.0] = n;
-            self.data[n] = Some(value);
+            if n == self.data.len() {
+                unsafe { self.data.push_impl(Some(value)) };
+            } else {
+                self.data[n] = Some(value);
+            }
             self.len += 1;
         }
 

@@ -41,6 +41,7 @@
 * [#1977](https://github.com/eclipse-iceoryx/iceoryx2/issues/1977) Restructure the ROS 2 gateway into a link gateway with a ROS 2 adapter
 * [#1977](https://github.com/eclipse-iceoryx/iceoryx2/issues/1977) Remove the former gateway core in `iceoryx2-gateway/`, superseded by the link crates
 * [#2010](https://github.com/eclipse-iceoryx/iceoryx2/issues/2010) Receive bytes from a tunnel directly into loaned samples
+* [#9043](https://github.com/eclipse-iceoryx/iceoryx2/issues/9043) Initialize the slots of a slot map when they are first used, so that unused capacity costs no memory
 
 ### Workflow
 
