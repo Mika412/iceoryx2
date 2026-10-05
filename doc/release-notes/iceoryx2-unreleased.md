@@ -60,6 +60,7 @@
 -->
 
 * [#1](https://github.com/eclipse-iceoryx/iceoryx2/issues/1) Example text
+* [#9037](https://github.com/eclipse-iceoryx/iceoryx2/issues/9037) Expose the names of ports in the port details of the C and C++ bindings
 
 ### API Breaking Changes
 
