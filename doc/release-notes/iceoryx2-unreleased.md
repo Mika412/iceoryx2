@@ -18,6 +18,7 @@
 * [#2031](https://github.com/eclipse-iceoryx/iceoryx2/issues/2031) Notify the event service named after a service when the link delivered samples to it
 * [#9038](https://github.com/eclipse-iceoryx/iceoryx2/issues/9038) Allocate the sample reference counters of a grown data segment only when the data segment grows
 * [#9040](https://github.com/eclipse-iceoryx/iceoryx2/issues/9040) Keep the contents of a static storage in memory and close its file
+* [#9041](https://github.com/eclipse-iceoryx/iceoryx2/issues/9041) Close the file descriptor of a dynamic storage once its shared memory is mapped
 
 ### Bugfixes
 
