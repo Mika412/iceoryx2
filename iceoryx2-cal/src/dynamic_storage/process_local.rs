@@ -176,6 +176,9 @@ impl<T> StorageDetails<T> {
             .as_ptr() as *mut MaybeUninit<T>,
             layout,
         };
+        // The supplementary memory has to be zeroed, like the one of a newly created shared
+        // memory or file.
+        unsafe { (new_self.data_ptr as *mut u8).write_bytes(0, size) };
         unsafe { new_self.data_ptr.write(MaybeUninit::uninit()) };
         new_self
     }

@@ -30,6 +30,7 @@
 * [#2044](https://github.com/eclipse-iceoryx/iceoryx2/issues/2044) Respect the order of `PATH` when looking up CLI commands
 * [#2045](https://github.com/eclipse-iceoryx/iceoryx2/issues/2045) List a CLI command only once when it is found in multiple search paths
 * [#2050](https://github.com/eclipse-iceoryx/iceoryx2/issues/2050) Find CLI commands in the folder of the running binary and prefer them over the ones in `PATH`
+* [#9047](https://github.com/eclipse-iceoryx/iceoryx2/issues/9047) Leave the used chunk lists of a new zero copy connection untouched, so that the memory of unused samples and segments is not resident
 
 ### Refactoring
 
