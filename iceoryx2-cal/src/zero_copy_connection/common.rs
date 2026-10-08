@@ -154,11 +154,18 @@ pub mod details {
             RelocatableUsedChunkList::const_memory_size(number_of_samples)
         }
 
+        /// # Safety
+        ///
+        ///  * the memory the allocator provides must be zeroed, which the supplementary memory of
+        ///    a [`DynamicStorage`] is
         unsafe fn init<T: Allocate<NonNull<u8>>>(
             &mut self,
             allocator: &T,
         ) -> Result<(), AllocationError> {
-            unsafe { self.used_chunk_list.init(allocator) }
+            // A connection has a used chunk list for every sample of every segment of every
+            // channel, mostly for segments that never exist. Writing the lists would make all of
+            // that memory resident.
+            unsafe { self.used_chunk_list.init_on_zeroed_memory(allocator) }
         }
     }
 

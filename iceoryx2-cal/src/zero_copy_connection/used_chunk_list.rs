@@ -20,6 +20,7 @@ use iceoryx2_bb_elementary::{
     relocatable_pointer::{Pointer, RelocatablePointer},
 };
 use iceoryx2_bb_elementary_traits::relocatable_container::RelocatableContainer;
+use iceoryx2_bb_elementary_traits::zeroable::Zeroable;
 use iceoryx2_log::{fail, fatal_panic};
 
 pub type UsedChunkList = details::UsedChunkList<OwningPointer<AtomicBool>>;
@@ -77,6 +78,55 @@ pub mod details {
             &mut self,
             allocator: &T,
         ) -> Result<(), iceoryx2_bb_elementary_traits::allocator::AllocationError> {
+            unsafe { self.allocate_entries(allocator) }?;
+            for i in 0..self.capacity {
+                unsafe {
+                    (self.data_ptr.as_ptr() as *mut AtomicBool)
+                        .add(i)
+                        .write(AtomicBool::new(false))
+                }
+            }
+            self.mark_initialized();
+
+            Ok(())
+        }
+
+        fn memory_size(capacity: usize) -> usize {
+            Self::const_memory_size(capacity)
+        }
+    }
+
+    impl UsedChunkList<RelocatablePointer<AtomicBool>> {
+        /// Initializes the list like [`RelocatableContainer::init()`] but without writing
+        /// its entries, since in zeroed memory every entry already reads as unused. The memory
+        /// pages of the entries stay untouched until an entry is used, so a large list costs
+        /// no memory while it is mostly unused.
+        ///
+        /// # Safety
+        ///
+        ///  * see [`RelocatableContainer::init()`]
+        ///  * the memory the allocator provides must be zeroed
+        pub unsafe fn init_on_zeroed_memory<
+            T: iceoryx2_bb_elementary_traits::allocator::Allocate<NonNull<u8>>,
+        >(
+            &mut self,
+            allocator: &T,
+        ) -> Result<(), iceoryx2_bb_elementary_traits::allocator::AllocationError> {
+            fn all_zero_is_unused<Entry: Zeroable>() {}
+            all_zero_is_unused::<AtomicBool>();
+
+            unsafe { self.allocate_entries(allocator) }?;
+            self.mark_initialized();
+
+            Ok(())
+        }
+
+        unsafe fn allocate_entries<
+            T: iceoryx2_bb_elementary_traits::allocator::Allocate<NonNull<u8>>,
+        >(
+            &mut self,
+            allocator: &T,
+        ) -> Result<(), iceoryx2_bb_elementary_traits::allocator::AllocationError> {
             if self.is_memory_initialized.load(Ordering::Relaxed) {
                 fatal_panic!(from self,
                 "Memory already initialized. Initializing it twice may lead to undefined behavior.");
@@ -91,24 +141,15 @@ pub mod details {
                 "Failed to initialize since the allocation of the data memory failed.");
 
             unsafe { self.data_ptr.init(memory) };
-            for i in 0..self.capacity {
-                unsafe {
-                    (self.data_ptr.as_ptr() as *mut AtomicBool)
-                        .add(i)
-                        .write(AtomicBool::new(false))
-                }
-            }
-
-            // relaxed is sufficient since no relocatable container can be used
-            // before init was called. Meaning, it is not allowed to send or share
-            // the container with other threads when it is in an uninitialized state.
-            self.is_memory_initialized.store(true, Ordering::Relaxed);
 
             Ok(())
         }
 
-        fn memory_size(capacity: usize) -> usize {
-            Self::const_memory_size(capacity)
+        fn mark_initialized(&self) {
+            // relaxed is sufficient since no relocatable container can be used
+            // before init was called. Meaning, it is not allowed to send or share
+            // the container with other threads when it is in an uninitialized state.
+            self.is_memory_initialized.store(true, Ordering::Relaxed);
         }
     }
 
