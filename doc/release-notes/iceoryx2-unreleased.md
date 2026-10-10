@@ -20,6 +20,7 @@
 * [#2082](https://github.com/eclipse-iceoryx/iceoryx2/issues/2082) Keep the contents of a static storage in memory and close its file
 * [#2084](https://github.com/eclipse-iceoryx/iceoryx2/issues/2084) Stop iterating a slot map after its last element
 * [#2094](https://github.com/eclipse-iceoryx/iceoryx2/issues/2094) Add a process-local trigger concept to `iceoryx2-cal` with an implementation based on a socket pair
+* [#2094](https://github.com/eclipse-iceoryx/iceoryx2/issues/2094) Add the `UserTrigger`, created by a `Node`, that wakes up a `WaitSet` from any thread of the process
 
 ### Bugfixes
 

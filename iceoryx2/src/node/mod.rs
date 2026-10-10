@@ -202,6 +202,7 @@ use crate::service::stale_resource_cleanup::remove_stale_port_resources;
 use crate::service::{self, ServiceRemoveNodeError};
 use crate::signal_handling_mode::SignalHandlingMode;
 use crate::unique_id_generator::*;
+use crate::user_trigger::{UserTrigger, UserTriggerCreateError};
 use crate::{config::Config, service::config_scheme::node_details_config};
 
 impl UniqueNodeId {
@@ -1171,6 +1172,12 @@ impl<Service: service::Service> Node<Service> {
     /// Instantiates a [`ServiceBuilder`](Builder) for a service with the provided name.
     pub fn service_builder(&self, name: &ServiceName) -> Builder<Service> {
         Builder::new(name, self.shared.clone())
+    }
+
+    /// Creates a [`UserTrigger`] that wakes up a [`WaitSet`](crate::waitset::WaitSet) from any
+    /// thread of the process.
+    pub fn create_user_trigger(&self) -> Result<UserTrigger<Service>, UserTriggerCreateError> {
+        UserTrigger::new()
     }
 
     /// Returns the [`NodeState`] of a specific [`Node`] that has the provided [`UniqueNodeId`].
