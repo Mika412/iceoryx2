@@ -139,4 +139,15 @@
     let bridges = link.bridges();
     ```
 
+2. The `Service` trait has the new associated type `LocalTrigger`, the
+   process-local mechanism that wakes up a thread waiting on the `Reactor` of
+   the service variant. A custom service variant has to define it.
+
+    ```rust
+    impl iceoryx2::service::Service for CustomServiceVariant {
+        // ...
+        type LocalTrigger = iceoryx2_cal::trigger::recommended::Recommended;
+    }
+    ```
+
 <!-- markdownlint-enable MD013 -->
